@@ -1,0 +1,22 @@
+.mr-auto, .mx-auto {
+  margin-right: 0 !important;
+}
+.card-container{
+  display:flex;
+  padding-top: 15px;
+  justify-content: space-between;
+  width:100%
+}
+.card{
+  flex-basis:30%;
+}
+.card-img-top {
+ height:200px;
+}
+.form-container{
+  margin: auto;
+  margin-top: 46px;
+  padding: 15px;
+  border-radius: 5px;
+  border: 1px solid #aaa;
+}
