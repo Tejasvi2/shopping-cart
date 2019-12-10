@@ -1,9 +1,12 @@
 var express = require('express');
 var router = express.Router();
-var Product = require('../models/product');
 var csrf = require('csurf');
-
 var csrfProtection = csrf();
+var passport = require('passport');
+
+var Product = require('../models/product');
+
+
 router.use(csrfProtection);
 /* GET home page. */
 router.get('/', function(req, res, next) {
@@ -18,11 +21,18 @@ router.get('/', function(req, res, next) {
 });
 
 router.get('/user/signup',(req,res)=>{
-  res.render('user/signup',{csrfToken:req.csrfToken()})
+  var messages = req.flash('error')
+  res.render('user/signup',{csrfToken:req.csrfToken(),messages:messages,hasErrors:messages.length>0})
 })
 
-router.post('/user/signup',(req,res)=>{
-  res.redirect('/')
+router.post('/user/signup',passport.authenticate('local.signup',{
+  successRedirect:'/user/profile',
+  failureRedirect:'/user/signup',
+  failureFlash:true
+}));
+
+router.get('/user/profile',(req,res)=>{
+  res.render('user/profile');
 })
 module.exports = router;
  
