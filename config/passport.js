@@ -16,8 +16,19 @@ passport.deserializeUser((id,done)=>{
 passport.use('local.signup',new LocalStrategy({
     usernameField:'email',
     passwordField:'password',
-    passReqToCallback:true
+    passReqToCallback:true 
 },(req,email,password,done)=>{
+    req.checkBody('email','Invalid Email').notEmpty().isEmail();
+    req.checkBody('password','Invalid password').notEmpty().isLength({min:4});
+    var errors = req.validationErrors();
+    if(errors){
+        var messages = [];
+        errors.forEach((error)=>{
+            messages.push(error.msg);
+        });
+        return done(null,false,req.flash('error',messages));
+    }
+
     User.findOne({'email':email},(err,user)=>{
         if(err){
             return done(err);
