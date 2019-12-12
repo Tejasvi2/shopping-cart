@@ -5,8 +5,9 @@ var csrfProtection = csrf();
 
 
 var Product = require('../models/product');
+var Cart = require('../models/cart');
 
-
+ 
 router.use(csrfProtection);
 /* GET home page. */
 router.get('/', function(req, res, next) {
@@ -20,30 +21,30 @@ router.get('/', function(req, res, next) {
   }); 
 });
 
-// router.get('/user/signup',(req,res)=>{
-//   var messages = req.flash('error')
-//   res.render('user/signup',{csrfToken:req.csrfToken(),messages:messages,hasErrors:messages.length>0})
-// })
+router.get('/add-to-cart/:id',(req,res)=>{
+var productId = req.params.id; // get id from nav params
+var cart = new Cart(req.session.cart?req.session.cart :{})
+Product.findById(productId,(err,product)=>{
+  if(err){
+    return res.redirect('/');
+  }
+  cart.add(product,product.id);
+  req.session.cart = cart; // to save cart element to session
+  console.log(req.session.cart,'cartt')
+  res.redirect('/'); 
+  
+}) 
 
-// router.post('/user/signup',passport.authenticate('local.signup',{
-//   successRedirect:'/user/profile',
-//   failureRedirect:'/user/signup',
-//   failureFlash:true
-// }));
+});
 
-// router.get('/user/signin',(req,res)=>{
-//   var messages = req.flash('error')
-//   res.render('user/signin',{csrfToken:req.csrfToken(),messages:messages,hasErrors:messages.length>0})
-// })
 
-// router.post('/user/signin',passport.authenticate('local.signin',{
-//   successRedirect:'/user/profile',
-//   failureRedirect:'/user/signin',
-//   failureFlash:true
-// }));
+router.get('/shopping-cart',(req,res)=>{
+  if(!req.session.cart){
+    return res.render('shop/shopping-cart',{products:null});
+  }
+  var cart =  new Cart(req.session.cart);
+  res.render('shop/shopping-cart',{products:cart.generateArray(),totalPrice:cart.totalPrice})
+});
 
-// router.get('/user/profile',(req,res)=>{
-//   res.render('user/profile');
-// })
 module.exports = router;
  

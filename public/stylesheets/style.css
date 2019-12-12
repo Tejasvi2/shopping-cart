@@ -20,3 +20,12 @@
   border-radius: 5px;
   border: 1px solid #aaa;
 }
+.div-center{
+  margin:auto;
+  padding-top:15px;
+}
+.badge{
+  background-color: #e0e0e0;
+  float: right;
+  margin: 4px;
+}
